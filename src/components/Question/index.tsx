@@ -1,4 +1,3 @@
-
 import { ReactNode } from 'react'
 import ex from 'classnames'
 
@@ -12,14 +11,14 @@ type QuestionProps = {
     }
     children?: ReactNode,
     isAnswered?: boolean;
-    isHiglighted?: boolean
+    isHighlighted?: boolean
 }
 
 export function Question({
     content,
     author,
     isAnswered = false,
-    isHiglighted = false,
+    isHighlighted = false,
     children
 }: QuestionProps) {
     return (
@@ -27,7 +26,7 @@ export function Question({
             className={ex(
                 'question',
                 { answered: isAnswered },
-                { highlighted: isHiglighted && !isAnswered}
+                { highlighted: isHighlighted && !isAnswered}
             )}
         >
             <p>{content}</p>

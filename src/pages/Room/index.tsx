@@ -1,30 +1,43 @@
-import { FormEvent, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { FormEvent, useState, useEffect } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 
-import { useAuth } from '../hooks/useAuth'
-import { database } from '../services/firebase'
+import { useAuth } from '../../hooks/useAuth'
+import { useRoom } from '../../hooks/useRoom'
 
-import logoImg from '../assets/images/logo.svg'
+import { database } from '../../services/firebase'
 
-import { Button } from '../components/Button'
-import { EmptyQuestions } from '../components/EmptyQuestions'
-import { RoomCode } from '../components/RoomCode'
-import { Question } from '../components/Question'
+import logoImg from '../../assets/images/logo.svg'
 
-import '../styles/room.scss'
-import { useRoom } from '../hooks/useRoom'
+import { Button } from '../../components/Button'
+import { EmptyQuestions } from '../../components/EmptyQuestions'
+import { RoomCode } from '../../components/RoomCode'
+import { Question } from '../../components/Question'
 
-type RoomParms = {
+import '../../styles/room.scss'
+
+type RoomParams = {
     id: string;
 }
 
 export function Room() {
     const { user, signInWithGoogle } = useAuth()
-    const params = useParams<RoomParms>()
+    const history = useHistory()
+    const params = useParams<RoomParams>()
     const [newQuestion, setNewQuestion] = useState('')
     const roomId = params.id 
     
     const { questions, title } = useRoom(roomId)
+
+    useEffect(() => {
+        const roomRef = database.ref(`rooms/${roomId}`)
+        roomRef.once('value', room => {
+            const isEndedRoom = room.val().endedAt
+ 
+            if(isEndedRoom) {
+                history.push('/')
+            }
+        })
+     }, [user, history, roomId])
     
     async function handleSendQuestion(event: FormEvent) {
         event.preventDefault()
@@ -98,10 +111,10 @@ export function Room() {
                                 <span>{user.name}</span>
                             </div>
                         ) : (
-                            <span>Para enviar uma pergunta, 
+                            <span>Para enviar uma pergunta,&nbsp;
                                 <button onClick={signInWithGoogle}>
-                                    faça seu login
-                                </button>.
+                                    faça seu login.
+                                </button>
                             </span>
                         ) }
                         <Button type="submit" disabled={!user}>Enviar pergunta</Button>
@@ -116,7 +129,7 @@ export function Room() {
                                     key={question.id}
                                     content={question.content}
                                     author={question.author}
-                                    isHiglighted={question.isHighlighted}
+                                    isHighlighted={question.isHighlighted}
                                     isAnswered={question.isAnswered}
                                 >
                                     { !question.isAnswered && (

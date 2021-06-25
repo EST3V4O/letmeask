@@ -18,6 +18,7 @@
             > div {
                 display: flex;
                 align-items: center;
+                justify-content: center;
                 gap: 16px;
 
                 button {
@@ -30,6 +31,7 @@
 
     main {
         max-width: 800px;
+        padding: 0 20px;
         margin: 0 auto;
 
         .room-title {
@@ -97,13 +99,13 @@
     
                     button {
                         background: transparent;
-                        margin-left: 5px;
                         border: 0;
                         color: #835afb;
                         text-decoration: underline;
                         font-size: 14px;
                         font-weight: 500;
                         cursor: pointer;
+                        display: inline-block;
                     }
                 }
             }
@@ -116,5 +118,21 @@
                 outline: none;
             }
         }
+    }
+}
+
+@media (max-width: 600px) {
+    #page-room {
+        header .content {
+            flex-direction: column;
+            gap: 20px
+        }
+    }
+}
+
+@media (max-width: 450px) {
+    header .content > div {
+        flex-direction: column;
+        gap: 20px;
     }
 }

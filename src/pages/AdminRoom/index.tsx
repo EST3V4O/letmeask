@@ -1,25 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { useRoom } from '../hooks/useRoom'
-import { useAuth } from '../hooks/useAuth'
+import { useRoom } from '../../hooks/useRoom'
+import { useAuth } from '../../hooks/useAuth'
 
-import { database } from '../services/firebase'
+import { database } from '../../services/firebase'
 
-import logoImg from '../assets/images/logo.svg'
-import deleteImg from '../assets/images/delete.svg'
-import checkedImg from '../assets/images/check.svg'
-import answerImg from '../assets/images/answer.svg'
+import logoImg from '../../assets/images/logo.svg'
+import deleteImg from '../../assets/images/delete.svg'
+import checkedImg from '../../assets/images/check.svg'
+import answerImg from '../../assets/images/answer.svg'
 
 import Modal from 'react-modal'
 
-import { Button } from '../components/Button'
-import { EmptyQuestions } from '../components/EmptyQuestions'
-import { RoomCode } from '../components/RoomCode'
-import { Question } from '../components/Question'
+import { Button } from '../../components/Button'
+import { EmptyQuestions } from '../../components/EmptyQuestions'
+import { RoomCode } from '../../components/RoomCode'
+import { Question } from '../../components/Question'
 
-import '../styles/room.scss'
-import '../styles/modal.scss'
+import '../../styles/room.scss'
+import '../../styles/modal.scss'
 
 type RoomParams = {
     id: string;
@@ -37,20 +37,20 @@ export function AdminRoom() {
     const { questions, title } = useRoom(roomId)
 
     useEffect(() => {
-        const roomRef = database.ref(`rooms/${roomId}`)
+       const roomRef = database.ref(`rooms/${roomId}`)
+       roomRef.once('value', room => {
+           const authorId = room.val().authorId
+           const isEndedRoom = room.val().endedAt
 
-        roomRef.once('value', room => {
-            const { authorId } = room.val()
+           if(authorId !== user?.id) {
+               history.push(`/rooms/${roomId}`)
+           }
 
-            if(authorId !== user?.id) {
-                history.push('/')
-            }
-        })
-
-        return () => {
-            roomRef.off('value')
-        }
-    }, [roomId, user?.id, history])
+           if(isEndedRoom) {
+               history.push('/')
+           }
+       })
+    }, [user, history, roomId])
 
     async function handleEndRoom() {
         database.ref(`rooms/${roomId}`).update({
@@ -59,7 +59,6 @@ export function AdminRoom() {
 
         history.push('/')
     }
-
 
     async function handleDeleteQuestion(questionId: string | undefined) {
         if(!questionId) {
@@ -110,7 +109,7 @@ export function AdminRoom() {
                                 content={question.content}
                                 author={question.author}
                                 isAnswered={question.isAnswered}
-                                isHiglighted={question.isHighlighted}
+                                isHighlighted={question.isHighlighted}
                             >
                                 { !question.isAnswered && (
                                     <>
