@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useHistory } from "react-router-dom"
 import { database } from "../services/firebase"
 import { useAuth } from "./useAuth"
 
@@ -30,8 +31,25 @@ type QuestionType = {
 
 export function useRoom(roomId: string) {
     const { user } = useAuth()
+    const history = useHistory()
     const [questions, setQuestions] = useState<QuestionType[]>([])
     const [title, setTitle] = useState('')
+
+    useEffect(() => {
+        const roomRef = database.ref(`rooms/${roomId}`)
+
+        roomRef.once('value', room => {
+            const isEndedRoom = room.val().endedAt
+
+            if(isEndedRoom) {
+                history.push('/')
+            }
+        })
+
+        return () => {
+            roomRef.off('value')
+        }
+    }, [roomId, history])
 
     useEffect(() => {
         const roomRef = database.ref(`rooms/${roomId}`)

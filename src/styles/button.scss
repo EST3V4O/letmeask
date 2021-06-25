@@ -33,4 +33,14 @@
         opacity: 0.6;
         cursor: not-allowed;
     }
+
+    &.cancel {
+        color: #737380;
+        background: #DBDCDD;
+    }
+
+    &.delete {
+        color: #fff;
+        background: #E73F5D;
+    }
 }
