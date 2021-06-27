@@ -1,9 +1,11 @@
+@import '../../styles/colors.scss';
+
 .button {
     height: 50px;
     border-radius: 8px;
     font-weight: 500;
-    background: #835afd;
-    color: #fff;
+    background: $blue;
+    color: $white;
     padding: 0 32px;
 
     display: flex;
@@ -20,9 +22,9 @@
     }
 
     &.outlined {
-        background: #fff;
-        border: 1px solid #835afd;
-        color: #835afd;
+        background: $white;
+        border: 1px solid $blue;
+        color: $blue;
     }
 
     &:not(:disabled):hover {
@@ -35,12 +37,28 @@
     }
 
     &.cancel {
-        color: #737380;
-        background: #DBDCDD;
+        color: $gray-medium;
+        background: $gray-light;
     }
 
     &.delete {
-        color: #fff;
-        background: #E73F5D;
+        color: $white;
+        background: $danger;
+    }
+
+    &.switcher {
+        padding: 0 8px;
+        height: 36px;
+
+        img {
+            height: 20px;
+            margin: 0;
+        }
+    }
+}
+
+.dark .button {
+    &.outlined {
+        background: $shadow-bg-dark;
     }
 }

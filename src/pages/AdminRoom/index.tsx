@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
+import Modal from 'react-modal'
 
 import { useRoom } from '../../hooks/useRoom'
 import { useAuth } from '../../hooks/useAuth'
@@ -7,26 +8,30 @@ import { useAuth } from '../../hooks/useAuth'
 import { database } from '../../services/firebase'
 
 import logoImg from '../../assets/images/logo.svg'
+import logoImgDark from '../../assets/images/logo-dark.svg'
 import deleteImg from '../../assets/images/delete.svg'
 import checkedImg from '../../assets/images/check.svg'
 import answerImg from '../../assets/images/answer.svg'
 
-import Modal from 'react-modal'
 
 import { Button } from '../../components/Button'
+import { ThemeSwitcher } from '../../components/ThemeSwitcher'
+import { Spinner } from '../../components/Spinner'
 import { EmptyQuestions } from '../../components/EmptyQuestions'
 import { RoomCode } from '../../components/RoomCode'
 import { Question } from '../../components/Question'
 
 import '../../styles/room.scss'
 import '../../styles/modal.scss'
+import { useTheme } from '../../hooks/useTheme'
 
 type RoomParams = {
     id: string;
 }
 
 export function AdminRoom() {
-    const { user } = useAuth()
+    const { user, loading, handleFinishLoading } = useAuth()
+    const { theme } = useTheme()
     const history = useHistory()
     const params = useParams<RoomParams>()
     const roomId = params.id 
@@ -44,13 +49,23 @@ export function AdminRoom() {
 
            if(authorId !== user?.id) {
                history.push(`/rooms/${roomId}`)
+               return
            }
 
            if(isEndedRoom) {
                history.push('/')
+               return
            }
-       })
+        })
+
+       return () => {
+           roomRef.off('value')
+       }
     }, [user, history, roomId])
+
+    useEffect(() => {
+        handleFinishLoading()
+    }, [handleFinishLoading])
 
     async function handleEndRoom() {
         database.ref(`rooms/${roomId}`).update({
@@ -81,14 +96,27 @@ export function AdminRoom() {
          })
     }
 
+    if(loading) {
+        return (
+            <Spinner loading/>
+        )
+    }
+
     return (
-        <div id="page-room">
+        <div id="page-room" className={theme}>
             <header>
                 <div className="content">
-                    <img src={logoImg} alt="Letmeask" />
+                    { theme === 'light' ? (
+                        <img src={logoImg} alt="Letmeask" />
+                    ) : (
+                        <img src={logoImgDark} alt="Letmeask" />
+                    )}
                     <div>
                         <RoomCode code={roomId}/>
-                        <Button isOutlined onClick={() => setEndRoomModal(true)}>Encerar sala</Button>
+                        <div>
+                            <Button isOutlined onClick={() => setEndRoomModal(true)}>Encerar sala</Button>
+                            <ThemeSwitcher />
+                        </div>
                     </div>
                 </div>
             </header>
@@ -140,7 +168,7 @@ export function AdminRoom() {
                     ) }
                     <Modal
                         isOpen={questionIdModalOpen !== undefined}
-                        className="modal"
+                        className={`modal ${theme}`}
                         onRequestClose={() => setQuestionIdModalOpen(undefined)}
                     >
                         <div>
@@ -166,7 +194,7 @@ export function AdminRoom() {
                 </div>
             </main>
             <Modal
-                className="modal"
+                className={`modal ${theme}`}
                 isOpen={endRoomModal}
                 onRequestClose={() => setEndRoomModal(false)}
             >

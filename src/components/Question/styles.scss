@@ -1,3 +1,5 @@
+@import '../../styles/colors.scss';
+
 .question {
     background: #fefefe;
     border-radius: 8px;
@@ -10,11 +12,11 @@
 
     
     &.highlighted {
-        background: #f4f0ff;
-        border: 1px solid #835afd;
+        background: $white-details;
+        border: 1px solid $blue;
 
         footer .user-info span {
-            color: #29292e;
+            color:$color-theme-light;
         }
     }
     
@@ -44,7 +46,7 @@
     
             span {
                 margin-left: 8px;
-                color: #737380;
+                color: $gray-medium;
                 font-size: 14px;
             } 
         }
@@ -63,14 +65,13 @@
             &.like-button {
                 display: flex;
                 align-items: flex-end;
-                color: #737380;
                 gap: 8px;
 
                 &.liked {
-                    color: #835afd;
+                    color: $blue;
 
                     svg path {
-                        stroke: #835afd;
+                        stroke: $blue;
                     }
                 }
             }
@@ -80,5 +81,25 @@
             }
         }
     }
+}
 
+.dark .question {
+    p {
+        color: $white;
+    }
+
+    background: $shadow-bg-dark;
+
+    &.answered {
+        background: $shadow-bg-dark;
+        filter: brightness(0.7  );
+    }
+
+    footer {
+        .user-info {
+            span {
+                color: $gray-light;
+            }
+        }
+    }
 }

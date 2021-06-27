@@ -7,13 +7,16 @@ import { useRoom } from '../../hooks/useRoom'
 import { database } from '../../services/firebase'
 
 import logoImg from '../../assets/images/logo.svg'
+import logoImgDark from '../../assets/images/logo-dark.svg'
 
 import { Button } from '../../components/Button'
+import { ThemeSwitcher } from '../../components/ThemeSwitcher'
 import { EmptyQuestions } from '../../components/EmptyQuestions'
 import { RoomCode } from '../../components/RoomCode'
 import { Question } from '../../components/Question'
 
 import '../../styles/room.scss'
+import { useTheme } from '../../hooks/useTheme'
 
 type RoomParams = {
     id: string;
@@ -21,6 +24,8 @@ type RoomParams = {
 
 export function Room() {
     const { user, signInWithGoogle } = useAuth()
+    const { theme } = useTheme()
+
     const history = useHistory()
     const params = useParams<RoomParams>()
     const [newQuestion, setNewQuestion] = useState('')
@@ -81,11 +86,18 @@ export function Room() {
     }
 
     return (
-        <div id="page-room">
+        <div id="page-room" className={theme}>
             <header>
                 <div className="content">
-                    <img src={logoImg} alt="Letmeask" />
-                    <RoomCode code={roomId}/>
+                    { theme === 'light' ? (
+                        <img src={logoImg} alt="Letmeask" />
+                    ) : (
+                        <img src={logoImgDark} alt="Letmeask" />
+                    )}
+                    <div>
+                        <RoomCode code={roomId}/>
+                        <ThemeSwitcher />
+                    </div>
                 </div>
             </header>
 
@@ -112,7 +124,7 @@ export function Room() {
                             </div>
                         ) : (
                             <span>Para enviar uma pergunta,&nbsp;
-                                <button onClick={signInWithGoogle}>
+                                <button onClick={signInWithGoogle} className="danger">
                                     faça seu login.
                                 </button>
                             </span>

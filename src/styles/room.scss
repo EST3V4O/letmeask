@@ -1,4 +1,9 @@
+@import './colors.scss';
+
 #page-room {
+    max-height: 100%;
+    min-height: 100vh;
+    
     header {
         padding: 24px;
         border-bottom: 1px solid #e2e2e2;
@@ -15,7 +20,7 @@
                 max-height: 45px;
             }
 
-            > div {
+            > div, div > div  {
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -23,6 +28,11 @@
 
                 button {
                     height: 40px;
+                }
+
+
+                button.switcher, > div button + button {
+                    padding: 0 10px;
                 }
             }
         }
@@ -42,15 +52,15 @@
             h1 {
                 font-family: 'Poppins', sans-serif;
                 font-size: 24px;
-                color: #29292e;
+                color: $color-theme-light;
             }
     
             span {
                 margin-left: 16px;
-                background: #e559f9;
+                background: $pink;
                 border-radius: 9999px;
                 padding: 8px 16px;
-                color: #fff;
+                color: $white;
                 font-weight: 500;
                 font-size: 14px;
             }
@@ -62,7 +72,7 @@
                 border: 0;
                 padding: 16px;
                 border-radius: 8px;
-                background: #fefefe;
+                background: $white-details;
                 box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
                 resize: vertical;
                 min-height: 110px;
@@ -86,7 +96,7 @@
     
                     span {
                         margin-left: 8px;
-                        color: hsl(240, 6%, 17%);
+                        color: $color-theme-light;
                         font-weight: 500;
                         font-size: 14px;
                     }
@@ -100,7 +110,7 @@
                     button {
                         background: transparent;
                         border: 0;
-                        color: #835afb;
+                        color: $danger;
                         text-decoration: underline;
                         font-size: 14px;
                         font-weight: 500;
@@ -119,9 +129,38 @@
             }
         }
     }
+
+    &.dark {
+        background-color: $bg-theme-dark;
+
+        header {
+            border-bottom-color: $shadow-bg-dark;
+        }
+
+        .room-title {
+            h1 {
+                color: $white;
+            }
+        }
+
+        form {
+            textarea {
+                background: $shadow-bg-dark;
+                color: $white-details;
+            }
+        }
+
+        .form-footer {
+            .user-info {
+                span {
+                    color: $gray-light;
+                }
+            }
+        }
+    }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     #page-room {
         header .content {
             flex-direction: column;
@@ -130,7 +169,7 @@
     }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 550px) {
     header .content > div {
         flex-direction: column;
         gap: 20px;

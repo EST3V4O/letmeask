@@ -1,21 +1,27 @@
 import { FormEvent, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import Modal from 'react-modal'
 
 import illustrationImg from '../../assets/images/illustration.svg'
 import logoImg from '../../assets/images/logo.svg'
+import logoImgDark from '../../assets/images/logo-dark.svg'
 import googleIconImg from '../../assets/images/google-icon.svg'
 
 import { Button } from '../../components/Button'
+import { ThemeSwitcher } from '../../components/ThemeSwitcher'
 
 import '../../styles/auth.scss'
 
 import { useAuth } from '../../hooks/useAuth'
 import { database } from '../../services/firebase'
+import { useTheme } from '../../hooks/useTheme'
 
 export function Home() {
     const history = useHistory()
     const { user, signInWithGoogle } = useAuth()
     const [ roomCode, setRoomCode ] = useState('')
+    const [error, setError] = useState<string | undefined>()
+    const { theme } = useTheme()
 
     async function handleCreateRoom() {
         if(!user) {
@@ -35,12 +41,12 @@ export function Home() {
         const roomRef = await database.ref(`rooms/${roomCode}`).get()
 
         if(!roomRef.exists()) {
-            alert('Rooms does not exists')
+            setError('Essa sala não existe')
             return
         }
 
         if(roomRef.val().endedAt) {
-            alert('Room already closed.')
+            setError('Essa sala já está fechada')
             return
         }
 
@@ -48,7 +54,7 @@ export function Home() {
     }
 
     return (
-        <div id="page-auth">
+        <div id="page-auth" className={theme}>
             <aside>
                 <img src={illustrationImg} alt="Ilustração simbolizando perguntas e respostas " />
                 <strong>Crie salas de Q&amp;A ao-vivo</strong>
@@ -56,7 +62,11 @@ export function Home() {
             </aside>
             <main>
                 <div className="main-content">
-                    <img src={logoImg} alt="Letmeask" />
+                    { theme === 'light' ? (
+                        <img src={logoImg} alt="Letmeask" />
+                    ) : (
+                        <img src={logoImgDark} alt="Letmeask" />
+                    )}
                     <button onClick={handleCreateRoom} className="create-room">
                         <img src={googleIconImg} alt="Logo go Google" />
                         Crie sua sala com o Google
@@ -73,8 +83,12 @@ export function Home() {
                         <Button type="submit">
                             Entrar na sala
                         </Button>
+                        { error && (
+                            <p className="message-error">{error}</p>
+                        )}
                     </form>
                 </div>
+                <ThemeSwitcher />
             </main>
         </div>
     )

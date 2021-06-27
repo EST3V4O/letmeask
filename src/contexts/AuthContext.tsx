@@ -10,6 +10,8 @@ type User = {
 
 type AuthContextType = {
     user: User | undefined;
+    loading: boolean;
+    handleFinishLoading: () => void;
     signInWithGoogle: () => Promise<void>;
 }
 
@@ -21,6 +23,7 @@ export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthContextProvider(props: AuthContextProviderProps) {
     const [user, setUser] = useState<User>()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -28,7 +31,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
             const { displayName, photoURL, uid } = user
     
           if(!displayName || !photoURL) {
-            throw new Error('Missing informatiom from Google Account')
+            throw new Error('Missing information from Google Account')
           }
     
           setUser({
@@ -53,7 +56,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
           const { displayName, photoURL, uid } = result.user
     
           if(!displayName || !photoURL) {
-            throw new Error('Missing informatiom from Google Account')
+            throw new Error('Missing information from Google Account')
           }
     
           setUser({
@@ -64,8 +67,16 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         }
       }
 
+      function handleFinishLoading() {
+        setLoading(false)
+      }
+
     return (
-        <AuthContext.Provider value={{ user, signInWithGoogle }} >
+        <AuthContext.Provider value={{
+          user,
+          signInWithGoogle,
+          loading,
+          handleFinishLoading }} >
             {props.children}
         </AuthContext.Provider>
     )

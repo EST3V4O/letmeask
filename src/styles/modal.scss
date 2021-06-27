@@ -1,8 +1,10 @@
+@import './colors.scss';
+
 .modal {
   position: absolute;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(41, 38, 42, 0.8);
 
   width: 100vw;
   height: 100vh;
@@ -12,7 +14,7 @@
   align-items: center;
   
   & > div {
-    background: #F8F8F8;
+    background: $bg-theme-light;
     border-radius: 8px;
     padding: 50px 100px;
 
@@ -27,7 +29,7 @@
       height: 60px;
 
       path {
-        stroke: #E73F5D;
+        stroke: $danger;
       }
     }
 
@@ -50,5 +52,17 @@
       }
     }
 
+  }
+}
+
+.modal.dark {
+  & > div {
+    background: $modal-gb-dark;
+
+    > div {
+      p, h3 {
+        color: $color-theme-dark;
+      }
+    }
   }
 }
