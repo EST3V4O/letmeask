@@ -25,7 +25,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 ## 💻 Projeto
 
-O Letmeask é uma aplicação que permite a criação de salas Q&A (Questions and Answers) ou perguntas e respostas.  💜
+O Letmeask é uma aplicação que permite a criação de salas Q&A (Questions and Answers) ou perguntas e respostas.
 
 ## 🔖 Layout
 
